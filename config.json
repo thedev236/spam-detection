@@ -1,0 +1,6 @@
+{
+  "imap_server": "imap.gmail.com",
+  "email_user": "your_email@gmail.com",
+  "email_password": "your_app_password_here",
+  "spam_folder": "[Gmail]/Spam"
+}

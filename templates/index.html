@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Default Dark Theme Variables */
+        :root[data-theme="dark"] {
+            --bg-body: #0b0f17;
+            --bg-card: #131924;
+            --bg-subtle: #1a2232;
+            --bg-input: #0e131d;
+            
+            --border: rgba(255, 255, 255, 0.08);
+            --border-focus: #6366f1;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.25);
+            
+            --danger: #f43f5e;
+            --danger-bg: rgba(244, 63, 94, 0.12);
+            --danger-border: rgba(244, 63, 94, 0.35);
+            
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --success-border: rgba(16, 185, 129, 0.35);
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Light Theme Variables */
+        :root[data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-subtle: #e2e8f0;
+            --bg-input: #f8fafc;
+            
+            --border: #cbd5e1;
+            --border-focus: #4f46e5;
+            
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-dim: #94a3b8;
+            
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.2);
+            
+            --danger: #e11d48;
+            --danger-bg: #ffe4e6;
+            --danger-border: #f43f5e;
+            
+            --success: #059669;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Cyberpunk High-Contrast Theme Variables */
+        :root[data-theme="cyberpunk"] {
+            --bg-body: #050508;
+            --bg-card: #0d0d14;
+            --bg-subtle: #181824;
+            --bg-input: #08080d;
+            
+            --border: #2a2a3d;
+            --border-focus: #00f0ff;
+            
+            --text-main: #00f0ff;
+            --text-muted: #ff007f;
+            --text-dim: #707090;
+            
+            --primary: #ff007f;
+            --primary-hover: #d6006b;
+            --primary-glow: rgba(255, 0, 127, 0.4);
+            
+            --danger: #ff0055;
+            --danger-bg: rgba(255, 0, 85, 0.15);
+            --danger-border: #ff0055;
+            
+            --success: #00ff66;
+            --success-bg: rgba(0, 255, 102, 0.15);
+            --success-border: #00ff66;
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Bar */
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+
+        .header-inner {
+            max-width: 1150px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-select {
+            background: var(--bg-subtle);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .system-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--bg-subtle);
+            padding: 0.35rem 0.85rem;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        /* App Container */
+        main {
+            flex: 1;
+            max-width: 1150px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        /* Card Container */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Text Input */
+        textarea {
+            width: 100%;
+            height: 270px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            padding: 1rem;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Form Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .samples {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .samples span {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .btn-sample {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-sample:hover {
+            color: var(--text-main);
+            border-color: var(--primary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.55rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Output / Results Design */
+        .verdict-card {
+            padding: 1.25rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+        }
+
+        .verdict-card.is-spam {
+            background: var(--danger-bg);
+            border-color: var(--danger-border);
+        }
+
+        .verdict-card.is-clean {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+        }
+
+        .verdict-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .is-spam .verdict-title { color: var(--danger); }
+        .is-clean .verdict-title { color: var(--success); }
+
+        .verdict-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        .confidence-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            background: var(--bg-card);
+        }
+
+        .is-spam .confidence-badge { color: var(--danger); border: 1px solid var(--danger-border); }
+        .is-clean .confidence-badge { color: var(--success); border: 1px solid var(--success-border); }
+
+        /* Metric Cards */
+        .metric-card {
+            background: var(--bg-input);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            height: 7px;
+            background: var(--bg-subtle);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.5s ease;
+        }
+
+        .fill-spam { background: var(--danger); }
+        .fill-clean { background: var(--success); }
+
+        /* Tags */
+        .signals-card {
+            background: var(--bg-input);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .tag.alert {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border-color: var(--danger-border);
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 310px;
+            color: var(--text-dim);
+            text-align: center;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            gap: 0.75rem;
+        }
+
+        .empty-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-subtle);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            background: var(--bg-input);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <span>Spam Detector</span>
+            </div>
+
+            <div class="header-controls">
+                <select class="theme-select" id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="dark">🌙 Dark Theme</option>
+                    <option value="light">☀️ Light Theme</option>
+                    <option value="cyberpunk">⚡ Cyberpunk Theme</option>
+                </select>
+
+                <div class="system-badge">
+                    <span class="dot"></span>
+                    <span>System Ready</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="grid">
+            
+            <!-- Left Panel: Form Input -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        Input Content
+                    </span>
+                    <span class="counter" id="counter">0 chars | 0 words</span>
+                </div>
+
+                <form method="POST">
+                    <textarea 
+                        name="email_text" 
+                        id="email_text" 
+                        placeholder="Paste message, email, or suspicious text here to analyze..." 
+                        required 
+                        oninput="updateCounters()">{{ text }}</textarea>
+                    
+                    <div class="controls" style="margin-top: 1rem;">
+                        <div class="samples">
+                            <span>Samples:</span>
+                            <button type="button" class="btn-sample" onclick="loadSample('spam')">Spam</button>
+                            <button type="button" class="btn-sample" onclick="loadSample('ham')">Clean</button>
+                        </div>
+                        <div class="actions">
+                            <button type="button" class="btn-secondary" onclick="clearAll()">Clear</button>
+                            <button type="submit" class="btn-primary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                Analyze Text
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Panel: Readable Results -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        Analysis Report
+                    </span>
+                </div>
+
+                <div id="results-wrapper">
+                    {% if result %}
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        
+                        <!-- Verdict Banner -->
+                        <div class="verdict-card {% if result.label == 'SPAM' %}is-spam{% else %}is-clean{% endif %}">
+                            <div>
+                                <div class="verdict-title">
+                                    {% if result.label == 'SPAM' %}Spam Detected{% else %}Clean Content{% endif %}
+                                </div>
+                                <div class="verdict-desc">High confidence evaluation result</div>
+                            </div>
+                            <div class="confidence-badge">
+                                {{ result.confidence }}% Match
+                            </div>
+                        </div>
+
+                        <!-- Spam Probability -->
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <span style="color: var(--danger);">Spam Risk Probability</span>
+                                <span style="color: var(--danger); font-family: 'JetBrains Mono'; font-weight: 700;">{{ result.spam_probability }}%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill fill-spam" style="width: {{ result.spam_probability }}%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Clean Probability -->
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <span style="color: var(--success);">Legitimate Content Probability</span>
+                                <span style="color: var(--success); font-family: 'JetBrains Mono'; font-weight: 700;">{{ result.ham_probability }}%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill fill-clean" style="width: {{ result.ham_probability }}%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Detected Signals -->
+                        <div class="signals-card">
+                            <span class="card-title" style="font-size: 0.7rem;">Detected Indicators</span>
+                            <div class="tag-group">
+                                {% if result.label == 'SPAM' %}
+                                    <span class="tag alert">urgent-call-to-action</span>
+                                    <span class="tag alert">suspicious-link</span>
+                                    <span class="tag alert">unverified-sender</span>
+                                {% else %}
+                                    <span class="tag">standard-syntax</span>
+                                    <span class="tag">low-risk-score</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <p style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">Awaiting Analysis</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.2rem;">Enter your text on the left to run detector.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Theme Switcher Logic
+        function changeTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('selectedTheme', themeName);
+        }
+
+        // Restore saved theme from local storage
+        function initTheme() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeSelect').value = savedTheme;
+        }
+
+        function updateCounters() {
+            const text = document.getElementById('email_text').value;
+            const charCount = text.length;
+            const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+            document.getElementById('counter').innerText = `${charCount} chars | ${wordCount} words`;
+        }
+
+        function clearAll() {
+            document.getElementById('email_text').value = '';
+            updateCounters();
+
+            const emptyStateHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div>
+                        <p style="font-weight: 600; color: var(--text-main); font-size: 0.9rem;">Awaiting Analysis</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.2rem;">Enter your text on the left to run detector.</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('results-wrapper').innerHTML = emptyStateHTML;
+        }
+
+        function loadSample(type) {
+            const textArea = document.getElementById('email_text');
+            if (type === 'spam') {
+                textArea.value = "URGENT SECURITY ALERT: Your account password has expired! Please click http://secure-update-login.com to confirm your details immediately.";
+            } else if (type === 'ham') {
+                textArea.value = "Hi team,\n\nJust wanted to confirm our meeting scheduled for tomorrow at 2 PM. I have uploaded the notes to the shared drive.\n\nThanks!";
+            }
+            updateCounters();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initTheme();
+            updateCounters();
+        });
+    </script>
+</body>
+</html>
